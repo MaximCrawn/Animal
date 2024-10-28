@@ -26,7 +26,7 @@ public class Main {
                     case 2 -> listAnimalCommands();
                     case 3 -> trainAnimal(scanner);
                     case 4 -> listAnimalsByBirthDate();
-                    case 5 -> System.out.println("Всего животных в реестре: " + counter.getCount());
+                    case 5 -> showAnimalCount(scanner);
                     case 6 -> System.exit(0);
                     default -> System.out.println("Неверный выбор, попробуйте снова.");
                 }
@@ -140,21 +140,93 @@ public class Main {
     
 
     private static void trainAnimal(Scanner scanner) {
-        System.out.print("Введите имя животного для обучения: ");
-        String animalName = scanner.nextLine();
-        System.out.print("Введите новую команду: ");
-        String newCommand = scanner.nextLine();
-
+        if (registry.getAnimals().isEmpty()) {
+            System.out.println("Список животных пуст.");
+            return;
+        }
+        
+        System.out.print("Введите имя животного, которое нужно обучить: ");
+        String name = scanner.nextLine();
+        
         registry.getAnimals().stream()
-                .filter(a -> a.getName().equalsIgnoreCase(animalName))
-                .forEach(a -> {
-                    a.addCommand(newCommand);
-                    System.out.println("Животное обучено новой команде.");
-                });
+                .filter(animal -> animal.getName().equalsIgnoreCase(name))
+                .findFirst()
+                .ifPresentOrElse(
+                    animal -> {
+                        System.out.print("Введите новые команды для " + animal.getName() + " (разделите их запятой): ");
+                        String[] newCommands = scanner.nextLine().split(",");
+                        
+                        for (String command : newCommands) {
+                            animal.addCommand(command.trim());
+                        }
+                        
+                        System.out.println("Животное " + animal.getName() + " теперь знает команды:");
+                        animal.getCommands().forEach(System.out::println);
+                    },
+                    () -> System.out.println("Животное с именем " + name + " не найдено.")
+                );
     }
+    
 
     private static void listAnimalsByBirthDate() {
         registry.getAnimalsSortedByBirthDate()
                 .forEach(animal -> System.out.println(animal.getName() + " - " + animal.getBirthDate()));
+    }
+
+
+    private static void showAnimalCount(Scanner scanner) {
+        System.out.println("Выберите вариант для подсчёта:");
+        System.out.println("1. Всего животных");
+        System.out.println("2. Домашние животные (Pets)");
+        System.out.println("3. Вьючные животные (PackAnimals)");
+
+        int categoryChoice = scanner.nextInt();
+        scanner.nextLine(); // Считывание новой строки
+
+        int count = 0;
+
+        switch (categoryChoice) {
+            case 1 -> {
+                count = registry.getAnimals().size();
+                System.out.println("Всего животных: " + count);
+            }
+            case 2 -> {
+                System.out.println("Выберите тип домашнего животного:");
+                System.out.println("1. Собака (Dog)");
+                System.out.println("2. Кошка (Cat)");
+                System.out.println("3. Хомяк (Hamster)");
+                
+                int petChoice = scanner.nextInt();
+                scanner.nextLine(); // Считывание новой строки
+                
+                count = switch (petChoice) {
+                    case 1 -> (int) registry.getAnimals().stream().filter(Dog.class::isInstance).count();
+                    case 2 -> (int) registry.getAnimals().stream().filter(Cat.class::isInstance).count();
+                    case 3 -> (int) registry.getAnimals().stream().filter(Hamster.class::isInstance).count();
+                    default -> 0;
+                };
+                
+                System.out.println("Количество выбранного типа домашних животных: " + count);
+            }
+            case 3 -> {
+                System.out.println("Выберите тип вьючного животного:");
+                System.out.println("1. Лошадь (Horse)");
+                System.out.println("2. Верблюд (Camel)");
+                System.out.println("3. Осел (Donkey)");
+
+                int packAnimalChoice = scanner.nextInt();
+                scanner.nextLine(); // Считывание новой строки
+
+                count = switch (packAnimalChoice) {
+                    case 1 -> (int) registry.getAnimals().stream().filter(Horse.class::isInstance).count();
+                    case 2 -> (int) registry.getAnimals().stream().filter(Camel.class::isInstance).count();
+                    case 3 -> (int) registry.getAnimals().stream().filter(Donkey.class::isInstance).count();
+                    default -> 0;
+                };
+
+                System.out.println("Количество выбранного типа вьючных животных: " + count);
+            }
+            default -> System.out.println("Неверный выбор.");
+        }
     }
 }
