@@ -4,4 +4,6 @@ public abstract class Pets extends Animal {
     public Pets(String name, LocalDate birthDate) {
         super(name, birthDate);
     }
+
+
 }
