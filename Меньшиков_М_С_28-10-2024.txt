@@ -1,0 +1,47 @@
+    1  sudo update
+    2  ls
+    3  dpkg -l
+    4  ls
+    5  cat >Pet.txt <<EOF
+Dogs
+Cats
+Hamsters
+EOF
+
+    6  ls
+    7  mv Pet.txt Pets.txt
+    8  ls
+    9  cat > PacAnimals.txt <<EOF
+Horses
+Camels
+Donkeys
+EOF
+
+   10  ls
+   11  cat Pets
+   12  cat Pets.txt
+   13  cat PacAnimals.txt
+   14  cat Pets.txt PacAnimals.txt > HumanFriends.txt
+   15  ls
+   16  cat HumanFriends.txt
+   17  mkdir Animals
+   18  ls
+   19  mv HumanFriends.txt Animals/
+   20  ls
+   21  cd Animals/
+   22  ls
+   23  cd ..
+   24  sudo apt update
+   25  wget https://dev.mysql.com/get/mysql-apt-config_0.8.33-1_all.deb
+   26  ls
+   27  sudo dpkg -i mysql-apt-config_0.8.33-1_all.deb
+   28  sudo apt update
+   29  sudo apt install mysql-server
+   30  sudo systemctl status mysql
+   31  sudo dpkg -r mysql-apt-config_0.8.33-1_all.deb
+   32  sudo dpkg -r mysql-apt-config
+   33  sudo systemctl status mysql
+   34  ls
+   35  sudo rm mysql-apt-config_0.8.33-1_all.deb
+   36  ls
+   37  history > "Меньшиков_М_С_28-10-2024.txt"
