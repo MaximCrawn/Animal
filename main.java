@@ -117,10 +117,27 @@ public class Main {
     }
 
     private static void listAnimalCommands() {
-        registry.getAnimals().forEach(animal -> 
-            System.out.println(animal.getName() + ": " + animal.getCommands())
-        );
+        if (registry.getAnimals().isEmpty()) {
+            System.out.println("Список животных пуст.");
+            return;
+        }
+        
+        System.out.print("Введите имя животного: ");
+        Scanner scanner = new Scanner(System.in);
+        String name = scanner.nextLine();
+        
+        registry.getAnimals().stream()
+                .filter(animal -> animal.getName().equalsIgnoreCase(name))
+                .findFirst()
+                .ifPresentOrElse(
+                    animal -> {
+                        System.out.println("Команды животного " + animal.getName() + ":");
+                        animal.getCommands().forEach(System.out::println);
+                    },
+                    () -> System.out.println("Животное с именем " + name + " не найдено.")
+                );
     }
+    
 
     private static void trainAnimal(Scanner scanner) {
         System.out.print("Введите имя животного для обучения: ");
